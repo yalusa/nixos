@@ -1,15 +1,15 @@
-# Python settings — single-sourced from the market-dashboard flake.
-# pythonEnv and the app itself both come from flake.nix's own package
-# outputs, so the dependency list only ever needs to be edited in one
-# place (flake.nix's `pythonEnv` definition).
+# Python settings — single-sourced from market_dashboard.nix.
+# pythonEnv and the app itself both come from that file, so the
+# dependency list only ever needs to be edited in one place
+# (market_dashboard.nix's `pythonEnv` definition).
 { pkgs, ... }:
 
 let
-  flake = builtins.getFlake "path:/mnt/data/GDrive/AI/market";
+  marketDashboard = pkgs.callPackage ./market_dashboard.nix { };
 in
 {
   environment.systemPackages = [
-    flake.packages.${pkgs.system}.pythonEnv
-    flake.packages.${pkgs.system}.default
+    marketDashboard.pythonEnv
+    marketDashboard
   ];
 }
