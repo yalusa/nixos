@@ -1,0 +1,23 @@
+{ config, pkgs, ... }:
+
+
+{
+  security.sudo.enable = true;
+  security.sudo.extraRules = [
+    {
+      groups = [ "wheel" ]; # Apply this to the 'wheel' group
+      commands = [ "ALL" ];
+      hosts = [ "ALL" ];
+      runAs = [ "root" ];
+      options = [ "authenticate=root", "timestamp_timeout=0" ];
+    }
+    # You can add more rules for specific users if needed, e.g.:
+    # {
+    #   users = [ "someuser" ];
+    #   commands = [ "ALL" ];
+    #   hosts = [ "ALL" ];
+    #   runAs = [ "root" ];
+    #   options = [ "authenticate=root", "timestamp_timeout=0" ];
+    # }
+  ];
+}
