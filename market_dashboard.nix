@@ -26,6 +26,7 @@ stdenv.mkDerivation {
   buildInputs       = [ pythonEnv tcl tk ];
 
   dontBuild = true;
+  passthru = { inherit pythonEnv; };
 
   installPhase = ''
     runHook preInstall
