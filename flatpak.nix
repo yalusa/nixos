@@ -4,12 +4,24 @@
   # 1. Enable Flatpak service frameworks natively
   services.flatpak.enable = true;
 
-  # 2. Force NixOS profiles to actively index the shared location
+  # 2. Bind mount the external shared Flatpak directory directly to the standard system path
+  fileSystems."/var/lib/flatpak" = {
+    device = "/mnt/btrfs/flatpak";
+    fsType = "none";
+    options = [ "bind" ];
+  };
+
+  # 3. Safely append custom Flatpak paths without destroying standard NixOS paths
+  environment.extraInit = ''
+    export XDG_DATA_DIRS="/mnt/btrfs/flatpak/exports/share:$XDG_DATA_DIRS"
+  '';
+
+  # 4. Force NixOS profiles to actively index the shared location
   environment.profiles = [
     "/mnt/btrfs/flatpak/exports"
   ];
 
-  # 3. Declaratively generate a modern systemd service ensuring flathub is available
+  # 5. Declaratively generate a modern systemd service ensuring flathub is available
   systemd.services.flatpak-repo = {
     wantedBy = [ "multi-user.target" ];
     path = [ pkgs.flatpak ];
@@ -18,7 +30,7 @@
     '';
   };
 
-  # 4. Wayland Budgie Application Override Engine
+  # 6. Wayland Budgie Application Override Engine
   # Drops the KDE conflict hack, keeps execution clean for the labwc compositor,
   # and writes clean icons that Budgie's indexed environment can naturally resolve.
   system.activationScripts.flatpakLauncherFix = {
@@ -65,13 +77,13 @@
     '';
   };
 
-  # 5. Global tool alignment for Wayland clipboard runtimes
+  # 7. Global tool alignment for Wayland clipboard runtimes
   environment.systemPackages = with pkgs; [
-    wl-clipboard 
-    xclip        
+    wl-clipboard
+    xclip
   ];
 
-# 6. utomate the Flatpak User-Space Sync on every desktop login
+  # 8. Automate the Flatpak User-Space Sync on every desktop login
   systemd.user.services.flatpak-user-sync = {
     description = "Synchronize shared Flatpak user profile symlinks and overrides";
     wantedBy = [ "graphical-session.target" ];

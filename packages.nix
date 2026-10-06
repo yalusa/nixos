@@ -2,7 +2,10 @@
 
 {
   environment.systemPackages = with pkgs; [
+    autossh
     thunar
+    pipx
+    nodejs
     p7zip
     polkit_gnome
     lxqt.lxqt-policykit
@@ -65,4 +68,5 @@
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
   };
+
 }

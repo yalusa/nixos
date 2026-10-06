@@ -14,6 +14,8 @@
       ./appimage.nix
       # security - root passwords
        ./security.nix
+      # Thunderbird MCP
+       ./ollama-tunnel.nix
       # Python settings
        ./python.nix
       # Packages
@@ -35,18 +37,6 @@
       PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ "
     fi
   '';
-
-  # Safely append custom Flatpak paths without destroying standard NixOS paths
-  environment.extraInit = ''
-    export XDG_DATA_DIRS="/mnt/btrfs/flatpak/exports/share:$XDG_DATA_DIRS"
-  '';
-
-  # Bind mount the external Flatpak directory straight to the expected system path
-  fileSystems."/var/lib/flatpak" = {
-    device = "/mnt/btrfs/flatpak";
-    fsType = "none";
-    options = [ "bind" ];
-  };
 
   # Symlink binaries to standard paths (e.g., /bin/bash)
   environment.pathsToLink = [ "/bin" "/usr/bin" ];
